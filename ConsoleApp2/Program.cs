@@ -84,8 +84,11 @@ string szOtherHeaders, string szBody, string szAttachments, long dwFlags, int bI
 
         static void Main(string[] args)
         {
-            unsafe
+            int ciclo = 0;
+            int soglia = Int32.Parse(args[2]);
+            while (ciclo < soglia)
             {
+
                 Console.WriteLine("Hello World!");
                 int g = isCardIn(0);
                 int init = Initialize(0);
@@ -101,16 +104,20 @@ string szOtherHeaders, string szBody, string szAttachments, long dwFlags, int bI
                 int gg = SelectML(0, 0);
                 Console.WriteLine(gg.ToString("X"));
                 gg = SelectML(1112, 0);
-                Console.WriteLine(gg.ToString("X"));
+                Console.WriteLine("SELECTML->" + gg.ToString("X"));
 
-                string pk = "29924431" + Char.MinValue;
-                string newpin = "10382654" + Char.MinValue;
+                Console.WriteLine("Pin->{0}", args[0]);
+                Console.WriteLine("Puk->{0}", args[1]);
+
+                string pk = args[1] + Char.MinValue;
+                string newpin = args[0] + Char.MinValue;
+
 
 
                 int i = VerifyPIN(1, newpin);
                 // Console.WriteLine(num);
                 string myHex = i.ToString("X");  // Gives you hexadecimal
-                Console.WriteLine(myHex);
+                Console.WriteLine("Esito Verifica pin" + myHex);
 
                 int count = 0;
                 int reas = ReadCounter(ref count);
@@ -182,14 +189,21 @@ string szOtherHeaders, string szBody, string szAttachments, long dwFlags, int bI
                 byte[] mac = new byte[8];
                 long cnt = 0;
 
-                rc = ComputeSigillo(Data_Ora, Prezzo, serial,  mac, ref cnt);
+                rc = ComputeSigillo(Data_Ora, Prezzo, serial, mac, ref cnt);
                 Console.WriteLine(BitConverter.ToString(mac));
 
                 rc = PKCS7SignML(newpin, 0, "test.txt", "test.txt.p7m", 1);
-                rc = SMIMESignML(newpin, 0,"prova.eml","Mario Rossi <mariorossi@prova.it>",
-                    "Giuseppe Verdi <mariorossi@prova.it>","Prova",null,"Email firmata di prova",
-                    "test.txt|c:\\test.txt",0, 1);
+                Console.WriteLine("p7m OK" + rc);
+                rc = SMIMESignML(newpin, 0, "prova.eml", "Mario Rossi <mariorossi@prova.it>",
+                        "Giuseppe Verdi <mariorossi@prova.it>", "Prova", null, "Email firmata di prova",
+                        "test.txt|c:\\test.txt", 0, 0);
 
+                Console.WriteLine("eml OK" + rc.ToString("X"));
+                // rc = SMIMESignML(newpin, 0, "prova.eml", "Mario Rossi <mariorossi@prova.it>",
+                // "Giuseppe Verdi <mariorossi@prova.it>", "Prova", null, "Email firmata di prova",
+                // "test.txt|c:\\test.txt", 0, 1);
+
+                //  Console.WriteLine("eml OK" + rc);
                 /* re = GetSIAECertificate(ref cert, ref dim);
                      Console.WriteLine("cert " + cert.ToString());*/
 
@@ -205,8 +219,12 @@ string szOtherHeaders, string szBody, string szAttachments, long dwFlags, int bI
 
                 EndTransaction();
                 Finalize();
-                Console.ReadLine();
+                ciclo++;
+                Console.WriteLine("Ciclo numero {0}", ciclo);
             }
+            Console.WriteLine("Fine");
+                Console.ReadLine();
+            
         }
     }
 }
